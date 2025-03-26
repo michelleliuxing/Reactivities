@@ -12,8 +12,17 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+// Add Cross-Origin Resource Sharing (CORS) services to the application
+// This is necessary to allow web browsers to make requests to our API from different domains
+builder.Services.AddCors();
+
 // Build the application
 var app = builder.Build();
+
+// Configure CORS middleware with specific policy
+app.UseCors(x => x.AllowAnyHeader()    // Allow any HTTP header in the request
+    .AllowAnyMethod()                   // Allow any HTTP method (GET, POST, PUT, DELETE, etc.)
+    .WithOrigins("http://localhost:3000", "https://localhost:3000")); // Only allow requests from these specific origins
 
 // Map the controllers to the application
 app.MapControllers();
